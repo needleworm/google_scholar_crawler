@@ -7,11 +7,11 @@ halfbottle@sangsang.farm
 
 from scholarly import scholarly as S
 from fp.fp import FreeProxy
-
+import time
 
 def _set_new_proxy():
     while True:
-        proxy = FreeProxy(rand=True, timeout=1).get()
+        proxy = FreeProxy(rand=True, timeout=1, country_id=["US", "CA"]).get()
         proxy_works = S.use_proxy(http=proxy, https=proxy)
         if proxy_works:
             break
@@ -24,6 +24,7 @@ def crawl_abstracts(keyword, outfile=None, max_iter=1000):
     while True:
         try:
             search_query = S.search_pubs(keyword)
+            time.sleep(5)
         except Exception as e:
             print("Trying new proxy on query base")
             _set_new_proxy()
@@ -43,6 +44,7 @@ def crawl_abstracts(keyword, outfile=None, max_iter=1000):
     for i in range(max_iter):
         while True:
             try:
+                time.sleep(5)
                 article = next(search_query).bib
             except Exception as e:
                 print("Trying new proxy on article read")
